@@ -1,6 +1,6 @@
-import React from 'react';
-import { MomentumData } from '../types/momentum.types';
-import { IncidentMarker } from './IncidentMarker';
+import React from "react";
+import { MomentumData } from "../types/momentum.types";
+import { IncidentMarker } from "./IncidentMarker";
 
 interface MomentumBarProps {
   data: MomentumData;
@@ -23,16 +23,16 @@ export const MomentumBar: React.FC<MomentumBarProps> = ({
   homeTeamColor,
   awayTeamColor,
   homeTeamId,
-  awayTeamId
+  awayTeamId,
 }) => {
   // Calculate bar heights based on momentum values
   const homeBarHeight = Math.abs(data.homeTeamValue) * (maxBarHeight / 100);
   const awayBarHeight = Math.abs(data.awayTeamValue) * (maxBarHeight / 100);
-  
+
   // Determine if momentum is positive (above center) or negative (below center)
   const homeY = data.homeTeamValue >= 0 ? centerY - homeBarHeight : centerY;
   const awayY = data.awayTeamValue >= 0 ? centerY - awayBarHeight : centerY;
-  
+
   return (
     <g className="momentum-bar">
       {/* Home team bar */}
@@ -41,6 +41,7 @@ export const MomentumBar: React.FC<MomentumBarProps> = ({
           x={x}
           y={homeY}
           width={width}
+          rx={4}
           height={homeBarHeight}
           fill={homeTeamColor}
           fillOpacity={0.8}
@@ -49,17 +50,19 @@ export const MomentumBar: React.FC<MomentumBarProps> = ({
           className="momentum-bar-rect"
         >
           <title>
-            Minute {data.minute}: {Math.abs(data.homeTeamValue).toFixed(1)} momentum
+            Minute {data.minute}: {Math.abs(data.homeTeamValue).toFixed(1)}{" "}
+            momentum
           </title>
         </rect>
       )}
-      
+
       {/* Away team bar */}
       {data.awayTeamValue !== 0 && (
         <rect
           x={x}
           y={awayY}
           width={width}
+          rx={4}
           height={awayBarHeight}
           fill={awayTeamColor}
           fillOpacity={0.8}
@@ -68,18 +71,23 @@ export const MomentumBar: React.FC<MomentumBarProps> = ({
           className="momentum-bar-rect"
         >
           <title>
-            Minute {data.minute}: {Math.abs(data.awayTeamValue).toFixed(1)} momentum
+            Minute {data.minute}: {Math.abs(data.awayTeamValue).toFixed(1)}{" "}
+            momentum
           </title>
         </rect>
       )}
-      
+
       {/* Incident markers */}
       {data.incidents.map((incident, index) => {
         const isHomeTeam = incident.teamId === homeTeamId;
-        const incidentY = isHomeTeam 
-          ? (data.homeTeamValue >= 0 ? centerY - homeBarHeight - 20 : centerY + homeBarHeight + 20)
-          : (data.awayTeamValue >= 0 ? centerY - awayBarHeight - 20 : centerY + awayBarHeight + 20);
-        
+        const incidentY = isHomeTeam
+          ? data.homeTeamValue >= 0
+            ? centerY - homeBarHeight - 20
+            : centerY + homeBarHeight + 20
+          : data.awayTeamValue >= 0
+          ? centerY - awayBarHeight - 20
+          : centerY + awayBarHeight + 20;
+
         return (
           <IncidentMarker
             key={incident.id}
